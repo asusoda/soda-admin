@@ -6,6 +6,7 @@ import GamePanel from "./pages/GamePanel";
 import Jeopardy from "./pages/Jeopardy";
 import ActiveGame from './pages/ActiveGame';
 import LoginPage from './pages/LoginPage';
+import PointsSystem from './pages/PointsSystem';
 
 import React from 'react';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
@@ -24,6 +25,7 @@ function App() {
         <Route path='/gamepanel/' element={<GamePanel />} />
         <Route path='/activegame/' element={<ActiveGame />} />
         <Route path='/jeopardy' element={<Jeopardy />} />
+        <Route path='/points' element={<PointsSystem />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>
