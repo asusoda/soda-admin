@@ -20,7 +20,12 @@ const useRequestManager = (endpoint, requestType, requestData = {}) => {
                 case 'post':
                     res = await axios.post(endpoint, requestData, { headers });
                     break;
-                // Add other request types (PUT, DELETE, etc) as needed
+                case 'put':
+                    res = await axios.put(endpoint, requestData, { headers });
+                    break;
+                case 'delete':
+                    res = await axios.delete(endpoint, { headers });
+                    break;
                 default:
                     throw new Error('Invalid request type');
             }
@@ -37,7 +42,7 @@ const useRequestManager = (endpoint, requestType, requestData = {}) => {
 
     const refreshToken = async () => {
         try {
-            const res = await axios.post('/api/requestToken', { token: cookies.accessToken });
+            const res = await axios.post('/auth/requestToken', { token: cookies.accessToken });
             if (res.status === 200) {
                 setCookie('accessToken', res.data.accessToken, { path: '/' });
                 makeRequest(); // Retry original request with new token
