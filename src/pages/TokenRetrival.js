@@ -14,9 +14,8 @@ const TokenRetrival = () => {
       const query = new URLSearchParams(location.search);
       const code = query.get('code');
       if (code) {
-        localStorage.setItem('accessToken', code);
-        // Optionally, navigate to another page after setting the token
-        navigate('/points'); // Redirect after successful token retrieval
+        localStorage.setItem('accessToken', `Bearer ${code}`);
+        navigate('/points'); // Redirect to points page
       } else {
         navigate('/500'); // Redirect to error page if no code
       }

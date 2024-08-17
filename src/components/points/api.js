@@ -18,7 +18,7 @@ export const getName = async() => {
 
 export const getLeaderboard = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/leaderboard`);
+    const response = await axios.get(`${API_BASE_URL}/points/leaderboard`);
     return response.data;
   } catch (error) {
     console.error("Error fetching leaderboard", error);
