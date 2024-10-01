@@ -15,7 +15,7 @@ const TokenRetrival = () => {
       const code = query.get('code');
       if (code) {
         localStorage.setItem('accessToken', `Bearer ${code}`);
-        navigate('/points'); // Redirect to points page
+        navigate('/home'); // Redirect to points page
       } else {
         navigate('/500'); // Redirect to error page if no code
       }
