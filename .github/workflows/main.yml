@@ -5,40 +5,31 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: CI/CD  # Specify the environment if using GitHub Environments
-
-    env:
-      SSH_USERNAME: "your_username"         # Replace with the SSH username
-      SSH_HOST: "your_host_or_ip"           # Replace with the server's IP address or hostname
-      SSH_PORT: "22"                        # Replace with the SSH port if it's not 22
-      SSH_PRIVATE_KEY: |
-        -----BEGIN OPENSSH PRIVATE KEY-----
-        your_private_key_here
-        -----END OPENSSH PRIVATE KEY-----
+    environment: CI/CD  # Specify the environment where the variables are set
 
     steps:
     - name: Print User, Host, and Port Information
       run: |
-        echo "Username: $SSH_USERNAME"
-        echo "Host: $SSH_HOST"
-        echo "Port: $SSH_PORT"
+        echo "Username: ${{ vars.USER }}"
+        echo "Host: ${{ vars.HOST }}"
+        echo "Port: ${{ vars.PORT }}"
 
     - name: Setup SSH Key
       run: |
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/temp_private_key
+        echo "${{ vars.SSHKEY }}" > ~/.ssh/temp_private_key
         chmod 600 ~/.ssh/temp_private_key
 
     - name: Debug SSH Connection
       run: |
-        ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/temp_private_key -p $SSH_PORT $SSH_USERNAME@$SSH_HOST echo "SSH connection successful"
+        ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/temp_private_key -p ${{ vars.SSH_PORT }} ${{ vars.SSH_USERNAME }}@${{ vars.SSH_HOST }} echo "SSH connection successful"
 
     - name: Execute remote deployment script
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ env.SSH_HOST }}
-        username: ${{ env.SSH_USERNAME }}
-        port: ${{ env.SSH_PORT }}
-        key: ${{ env.SSH_PRIVATE_KEY }}
+        host: ${{ vars.HOST }}
+        username: ${{ vars.USER}}
+        port: ${{ vars.PORT }}
+        key: ${{ vars.SSHKEY }}
         script: |
           sudo chmod +x /root/soda-admin/CD.sh
           sudo chmod +x /root/soda-admin/deploy.sh
