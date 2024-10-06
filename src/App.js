@@ -15,8 +15,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TokenRetrival from './pages/TokenRetrival';
 import HomePage from './pages/HomePage';
-
-
+import UserPage from './pages/UserPage';
+import LeaderBoard from './pages/LeaderBoard';
 
 function App() {
   
@@ -32,6 +32,8 @@ function App() {
         <Route path='/home' element={<HomePage/>} />
         <Route path='/auth' element = {<TokenRetrival />} />
         <Route path='/500' element = {<ServerError />} />
+        <Route path='/users' element={<UserPage />} />
+        <Route path='/leaderboard' element={<LeaderBoard />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>

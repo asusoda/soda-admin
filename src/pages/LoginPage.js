@@ -1,11 +1,41 @@
-// src/pages/LoginPage.js
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../components/utils/axios';  // Axios instance for making API requests
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+
     // Function to handle login
     const handleLogin = () => {
         window.location.href = 'http://localhost:5000/auth/login';  // Redirect to your Flask backend login route
     };
+
+    // Check if the token in localStorage is valid
+    useEffect(() => {
+        const validateToken = async () => {
+            const token = localStorage.getItem('accessToken');
+
+            if (token) {
+                try {
+                    const response = await apiClient.get('/auth/validateToken', {
+                        headers: {
+                            Authorization: token,  // Send the token in the Authorization header
+                        },
+                    });
+
+                    if (response.data.valid && !response.data.expired) {
+                        // If token is valid and not expired, redirect to /home
+                        navigate('/home');
+                    }
+                } catch (error) {
+                    console.log('Token validation failed:', error);
+                    // If token is invalid or expired, stay on the login page
+                }
+            }
+        };
+
+        validateToken();
+    }, [navigate]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
