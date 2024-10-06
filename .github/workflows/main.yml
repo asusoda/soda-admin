@@ -7,20 +7,38 @@ jobs:
     runs-on: ubuntu-latest
     environment: CI/CD  # Specify the environment if using GitHub Environments
 
+    env:
+      SSH_USERNAME: "your_username"         # Replace with the SSH username
+      SSH_HOST: "your_host_or_ip"           # Replace with the server's IP address or hostname
+      SSH_PORT: "22"                        # Replace with the SSH port if it's not 22
+      SSH_PRIVATE_KEY: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        your_private_key_here
+        -----END OPENSSH PRIVATE KEY-----
+
     steps:
     - name: Print User, Host, and Port Information
       run: |
-        echo "Username: ${{ secrets.USERNAME }}"
-        echo "Host: ${{ secrets.HOST }}"
-        echo "Port: ${{ secrets.PORT }}"
+        echo "Username: $SSH_USERNAME"
+        echo "Host: $SSH_HOST"
+        echo "Port: $SSH_PORT"
+
+    - name: Setup SSH Key
+      run: |
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/temp_private_key
+        chmod 600 ~/.ssh/temp_private_key
+
+    - name: Debug SSH Connection
+      run: |
+        ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/temp_private_key -p $SSH_PORT $SSH_USERNAME@$SSH_HOST echo "SSH connection successful"
 
     - name: Execute remote deployment script
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSHKEY }}
+        host: ${{ env.SSH_HOST }}
+        username: ${{ env.SSH_USERNAME }}
+        port: ${{ env.SSH_PORT }}
+        key: ${{ env.SSH_PRIVATE_KEY }}
         script: |
           sudo chmod +x /root/soda-admin/CD.sh
           sudo chmod +x /root/soda-admin/deploy.sh
@@ -28,6 +46,3 @@ jobs:
           pwd
           echo "Executing CD.sh"
           sudo /root/soda-admin/CD.sh
-
-
-    
