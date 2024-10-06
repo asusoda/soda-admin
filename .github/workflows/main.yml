@@ -8,6 +8,12 @@ jobs:
     environment: CI/CD  # Specify the environment if using GitHub Environments
 
     steps:
+    - name: Print User, Host, and Port Information
+      run: |
+        echo "Username: ${{ secrets.USERNAME }}"
+        echo "Host: ${{ secrets.HOST }}"
+        echo "Port: ${{ secrets.PORT }}"
+
     - name: Execute remote deployment script
       uses: appleboy/ssh-action@master
       with:
@@ -20,7 +26,8 @@ jobs:
           sudo chmod +x /root/soda-admin/deploy.sh
           ls -l /root/soda-admin/
           pwd
-          echo " Executing CD.sh"
+          echo "Executing CD.sh"
           sudo /root/soda-admin/CD.sh
+
 
     
