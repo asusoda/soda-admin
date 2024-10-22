@@ -8,28 +8,13 @@ jobs:
     environment: CI/CD  # Specify the environment where the variables are set
 
     steps:
-    - name: Print User, Host, and Port Information
-      run: |
-        echo "Username: ${{ vars.USER }}"
-        echo "Host: ${{ vars.HOST }}"
-        echo "Port: ${{ vars.PORT }}"
-
-    - name: Setup SSH Key
-      run: |
-        echo "${{ vars.SSHKEY }}" > ~/.ssh/temp_private_key
-        chmod 600 ~/.ssh/temp_private_key
-
-    - name: Debug SSH Connection
-      run: |
-        ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/temp_private_key -p ${{ vars.SSH_PORT }} ${{ vars.SSH_USERNAME }}@${{ vars.SSH_HOST }} echo "SSH connection successful"
-
     - name: Execute remote deployment script
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ vars.HOST }}
-        username: ${{ vars.USER}}
-        port: ${{ vars.PORT }}
-        key: ${{ vars.SSHKEY }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER}}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.SSHKEY }}
         script: |
           sudo chmod +x /root/soda-admin/CD.sh
           sudo chmod +x /root/soda-admin/deploy.sh
