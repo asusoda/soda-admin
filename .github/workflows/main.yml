@@ -5,14 +5,13 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: CI/CD  # Specify the environment where the variables are set
 
     steps:
     - name: Execute remote deployment script
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER}}
+        username: ${{ secrets.USER }}
         port: ${{ secrets.PORT }}
         key: ${{ secrets.SSHKEY }}
         script: |
