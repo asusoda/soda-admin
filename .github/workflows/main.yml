@@ -5,6 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: CI/CD
 
     steps:
     - name: Execute remote deployment script
