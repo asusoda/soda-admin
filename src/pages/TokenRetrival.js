@@ -26,7 +26,6 @@ const TokenRetrival = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      console.log(localStorage.getItem('accessToken'));
       <p>Logging in with Discord...</p>
     </div>
   );
