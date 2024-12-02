@@ -29,7 +29,7 @@ const CreateUserPage = () => {
     };
 
     try {
-      const response = await apiClient.post('/createUser', data);
+      const response = await apiClient.post('users/createUser', data);
       setSuccessMessage(response.data.message);
       setEmail('');
       setName('');
