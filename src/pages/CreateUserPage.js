@@ -10,6 +10,7 @@ const CreateUserPage = () => {
   const [name, setName] = useState('');
   const [asuId, setAsuId] = useState('');
   const [academicStanding, setAcademicStanding] = useState('');
+  const [major, setMajor] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -26,6 +27,7 @@ const CreateUserPage = () => {
       name,
       asu_id: asuId,
       academic_standing: academicStanding,
+      major,
     };
 
     try {
@@ -35,6 +37,7 @@ const CreateUserPage = () => {
       setName('');
       setAsuId('');
       setAcademicStanding('');
+      setMajor('');
     } catch (error) {
       if (error.response && error.response.data.error) {
         setError(error.response.data.error);
@@ -101,6 +104,17 @@ const CreateUserPage = () => {
                 placeholder="Enter academic standing"
                 value={academicStanding}
                 onChange={(e) => setAcademicStanding(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-white mb-2">Major</label>
+              <input
+                type="text"
+                className="w-full p-2 rounded-md bg-gray-700 text-white"
+                placeholder="Enter major"
+                value={major}
+                onChange={(e) => setMajor(e.target.value)}
               />
             </div>
 
