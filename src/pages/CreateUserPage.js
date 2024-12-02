@@ -21,7 +21,14 @@ const CreateUserPage = () => {
     setLoading(true);
     setError('');
     setSuccessMessage('');
-
+  
+    // Validate fields
+    if (!email || !name || !asuId || !academicStanding || !major) {
+      setError('All fields are required. Please fill out the form completely.');
+      setLoading(false);
+      return;
+    }
+  
     const data = {
       email,
       name,
@@ -29,7 +36,8 @@ const CreateUserPage = () => {
       academic_standing: academicStanding,
       major,
     };
-
+  
+    console.log(data);
     try {
       const response = await apiClient.post('users/createUser', data);
       setSuccessMessage(response.data.message);
@@ -48,6 +56,7 @@ const CreateUserPage = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex bg-gray-900 text-white">
