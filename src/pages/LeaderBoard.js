@@ -125,58 +125,64 @@ const Leaderboard = () => {
 
         {/* Modal for viewing user details */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg mx-auto relative">
-              <button className="absolute top-2 right-2 text-white" onClick={closeModal}>
-                ✖
-              </button>
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl mx-auto relative max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-gray-700">
+                <button 
+                  className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl"
+                  onClick={closeModal}
+                >
+                  ✖
+                </button>
+                <h2 className="text-2xl font-bold mb-4">{selectedUser?.name}</h2>
+                <p><strong>UUID:</strong> {selectedUser?.uuid}</p>
+                <p><strong>Academic Standing:</strong> {selectedUser?.academic_standing}</p>
+                <p><strong>Major:</strong> {selectedUser?.major}</p>
+              </div>
 
-              {loadingUser ? (
-                <div className="text-white">Loading user details...</div>
-              ) : modalError ? (
-                <div className="text-red-500">{modalError}</div>
-              ) : selectedUser && (
-                <>
-                  <h2 className="text-2xl font-bold mb-4">{selectedUser.name}</h2>
-                  <p><strong>UUID:</strong> {selectedUser.uuid}</p>
-                  <p><strong>Academic Standing:</strong> {selectedUser.academic_standing}</p>
-                  <p><strong>Major:</strong> {selectedUser.major}</p>
-
-                  <h3 className="text-xl font-bold mt-8 mb-4">Points History</h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full table-auto">
-                      <thead>
-                        <tr className="bg-gray-700">
-                          <th className="px-4 py-2">Event</th>
-                          <th className="px-4 py-2">Points</th>
-                          <th className="px-4 py-2">Awarded By</th>
-                          <th className="px-4 py-2">Date</th>
-                          <th className="px-4 py-2">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedUser.points_earned.map((point, index) => (
-                          <tr key={index} className="border-t border-gray-600">
-                            <td className="px-4 py-2">{point.event}</td>
-                            <td className="px-4 py-2">{point.points}</td>
-                            <td className="px-4 py-2">{point.awarded_by_officer}</td>
-                            <td className="px-4 py-2">{point.timestamp}</td>
-                            <td className="px-4 py-2">
-                              <button
-                                onClick={() => deletePoints(selectedUser.email, point.event)}
-                                disabled={deleteLoading}
-                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded disabled:opacity-50"
-                              >
-                                {deleteLoading ? 'Deleting...' : 'Delete'}
-                              </button>
-                            </td>
+              <div className="flex-1 overflow-y-auto p-6">
+                {loadingUser ? (
+                  <div className="text-white">Loading user details...</div>
+                ) : modalError ? (
+                  <div className="text-red-500">{modalError}</div>
+                ) : selectedUser && (
+                  <>
+                    <h3 className="text-xl font-bold mb-4">Points History</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full table-auto">
+                        <thead>
+                          <tr className="bg-gray-700">
+                            <th className="px-4 py-2">Event</th>
+                            <th className="px-4 py-2">Points</th>
+                            <th className="px-4 py-2">Awarded By</th>
+                            <th className="px-4 py-2">Date</th>
+                            <th className="px-4 py-2">Action</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
+                        </thead>
+                        <tbody>
+                          {selectedUser.points_earned.map((point, index) => (
+                            <tr key={index} className="border-t border-gray-600">
+                              <td className="px-4 py-2">{point.event}</td>
+                              <td className="px-4 py-2">{point.points}</td>
+                              <td className="px-4 py-2">{point.awarded_by_officer}</td>
+                              <td className="px-4 py-2">{point.timestamp}</td>
+                              <td className="px-4 py-2">
+                                <button
+                                  onClick={() => deletePoints(selectedUser.email, point.event)}
+                                  disabled={deleteLoading}
+                                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded disabled:opacity-50"
+                                >
+                                  {deleteLoading ? 'Deleting...' : 'Delete'}
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
