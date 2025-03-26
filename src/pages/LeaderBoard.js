@@ -13,6 +13,7 @@ const Leaderboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);  // Sidebar state
   const [showModal, setShowModal] = useState(false);  // Modal state
   const [selectedUser, setSelectedUser] = useState(null);  // Store selected user data for modal
+  const [selectedUserEmail, setSelectedUserEmail] = useState('');  // Store selected user's email
   const [loadingUser, setLoadingUser] = useState(false);  // Loading state for modal content
   const [modalError, setModalError] = useState('');  // Error state for modal
   const [deleteLoading, setDeleteLoading] = useState(false);  // Loading state for delete operation
@@ -22,6 +23,7 @@ const Leaderboard = () => {
     setLoadingUser(true);
     setModalError('');
     setShowModal(true);  // Show modal
+    setSelectedUserEmail(identifier);  // Store the identifier (email)
     try {
       const response = await apiClient.get(`/users/viewUser?user_identifier=${identifier}`);
       setSelectedUser(response.data);
@@ -40,6 +42,7 @@ const Leaderboard = () => {
   const closeModal = () => {
     setShowModal(false);
     setSelectedUser(null);
+    setSelectedUserEmail('');  // Clear the email when closing modal
   };
 
   // Function to delete points
@@ -50,12 +53,12 @@ const Leaderboard = () => {
         method: 'DELETE',
         url: '/points/delete_points',
         data: {
-          user_email: selectedUser.identifier,
+          user_email: selectedUserEmail,  // Use the stored email
           event: event
         }
       });
       // Refresh user details after deletion
-      viewUserDetails(selectedUser.identifier);
+      viewUserDetails(selectedUserEmail);
     } catch (error) {
       setModalError(error.response?.data?.error || 'Error deleting points');
     } finally {
@@ -170,7 +173,7 @@ const Leaderboard = () => {
                               <td className="px-4 py-2">{point.timestamp}</td>
                               <td className="px-4 py-2">
                                 <button
-                                  onClick={() => deletePoints(selectedUser, point.event)}
+                                  onClick={() => deletePoints(selectedUserEmail, point.event)}
                                   disabled={deleteLoading}
                                   className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded disabled:opacity-50"
                                 >
