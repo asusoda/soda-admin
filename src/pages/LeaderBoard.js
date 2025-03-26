@@ -15,22 +15,7 @@ const Leaderboard = () => {
   const [selectedUser, setSelectedUser] = useState(null);  // Store selected user data for modal
   const [loadingUser, setLoadingUser] = useState(false);  // Loading state for modal content
   const [modalError, setModalError] = useState('');  // Error state for modal
-
-  // Fetch the leaderboard data
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await apiClient.get('/points/leaderboard');
-        setLeaderboardData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError('Error fetching leaderboard data.');
-        setLoading(false);
-      }
-    };
-
-    fetchLeaderboard();
-  }, []);
+  const [deleteLoading, setDeleteLoading] = useState(false);  // Loading state for delete operation
 
   // Function to fetch and display the user details in the modal
   const viewUserDetails = async (identifier) => {
@@ -56,6 +41,41 @@ const Leaderboard = () => {
     setShowModal(false);
     setSelectedUser(null);
   };
+
+  // Function to delete points
+  const deletePoints = async (userEmail, event) => {
+    setDeleteLoading(true);
+    try {
+      await apiClient.delete('/points/delete_points', {
+        data: {
+          user_email: userEmail,
+          event: event
+        }
+      });
+      // Refresh user details after deletion
+      viewUserDetails(selectedUser.identifier);
+    } catch (error) {
+      setModalError(error.response?.data?.error || 'Error deleting points');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // Fetch the leaderboard data
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await apiClient.get('/points/leaderboard');
+        setLeaderboardData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError('Error fetching leaderboard data.');
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
 
   if (loading) {
     return <div className="text-center text-white">Loading...</div>;
@@ -122,14 +142,39 @@ const Leaderboard = () => {
                   <p><strong>Academic Standing:</strong> {selectedUser.academic_standing}</p>
                   <p><strong>Major:</strong> {selectedUser.major}</p>
 
-                  <h3 className="text-xl font-bold mt-8 mb-4">Points Earned</h3>
-                  <ul>
-                    {selectedUser.points_earned.map((point, index) => (
-                      <li key={index} className="mb-2">
-                        {point.points} points for {point.event} on {point.timestamp} (Awarded by: {point.awarded_by_officer})
-                      </li>
-                    ))}
-                  </ul>
+                  <h3 className="text-xl font-bold mt-8 mb-4">Points History</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full table-auto">
+                      <thead>
+                        <tr className="bg-gray-700">
+                          <th className="px-4 py-2">Event</th>
+                          <th className="px-4 py-2">Points</th>
+                          <th className="px-4 py-2">Awarded By</th>
+                          <th className="px-4 py-2">Date</th>
+                          <th className="px-4 py-2">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedUser.points_earned.map((point, index) => (
+                          <tr key={index} className="border-t border-gray-600">
+                            <td className="px-4 py-2">{point.event}</td>
+                            <td className="px-4 py-2">{point.points}</td>
+                            <td className="px-4 py-2">{point.awarded_by_officer}</td>
+                            <td className="px-4 py-2">{point.timestamp}</td>
+                            <td className="px-4 py-2">
+                              <button
+                                onClick={() => deletePoints(selectedUser.email, point.event)}
+                                disabled={deleteLoading}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded disabled:opacity-50"
+                              >
+                                {deleteLoading ? 'Deleting...' : 'Delete'}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </>
               )}
             </div>
