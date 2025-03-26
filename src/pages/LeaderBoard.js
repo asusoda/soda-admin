@@ -17,6 +17,29 @@ const Leaderboard = () => {
   const [loadingUser, setLoadingUser] = useState(false);  // Loading state for modal content
   const [modalError, setModalError] = useState('');  // Error state for modal
   const [deleteLoading, setDeleteLoading] = useState(false);  // Loading state for delete operation
+  const [showConfirmModal, setShowConfirmModal] = useState(false);  // State for confirmation modal
+  const [pointToDelete, setPointToDelete] = useState(null);  // Store point to be deleted
+
+  // Function to handle delete confirmation
+  const handleDeleteClick = (event) => {
+    setPointToDelete(event);
+    setShowConfirmModal(true);
+  };
+
+  // Function to handle confirmed deletion
+  const handleConfirmedDelete = async () => {
+    if (pointToDelete) {
+      await deletePoints(selectedUserEmail, pointToDelete);
+      setShowConfirmModal(false);
+      setPointToDelete(null);
+    }
+  };
+
+  // Function to cancel deletion
+  const handleCancelDelete = () => {
+    setShowConfirmModal(false);
+    setPointToDelete(null);
+  };
 
   // Function to fetch and display the user details in the modal
   const viewUserDetails = async (identifier) => {
@@ -173,7 +196,7 @@ const Leaderboard = () => {
                               <td className="px-4 py-2">{point.timestamp}</td>
                               <td className="px-4 py-2">
                                 <button
-                                  onClick={() => deletePoints(selectedUserEmail, point.event)}
+                                  onClick={() => handleDeleteClick(point.event)}
                                   disabled={deleteLoading}
                                   className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded disabled:opacity-50"
                                 >
@@ -187,6 +210,34 @@ const Leaderboard = () => {
                     </div>
                   </>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {showConfirmModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] p-4">
+            <div className="bg-gray-800 rounded-lg shadow-lg w-full max-w-md mx-auto p-6 relative">
+              <h3 className="text-xl font-bold mb-4 text-white">Confirm Deletion</h3>
+              <p className="text-gray-300 mb-6">
+                Are you sure you want to delete points for the event "{pointToDelete}"?
+                This action cannot be undone.
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={handleCancelDelete}
+                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmedDelete}
+                  disabled={deleteLoading}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                >
+                  {deleteLoading ? 'Deleting...' : 'Delete'}
+                </button>
               </div>
             </div>
           </div>
