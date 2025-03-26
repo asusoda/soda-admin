@@ -46,7 +46,9 @@ const Leaderboard = () => {
   const deletePoints = async (userEmail, event) => {
     setDeleteLoading(true);
     try {
-      await apiClient.delete('/points/delete_points', {
+      await apiClient.request({
+        method: 'DELETE',
+        url: '/points/delete_points',
         data: {
           user_email: userEmail,
           event: event
