@@ -45,13 +45,12 @@ const Leaderboard = () => {
   // Function to delete points
   const deletePoints = async (userEmail, event) => {
     setDeleteLoading(true);
-    console.log(userEmail, event);
     try {
       await apiClient.request({
         method: 'DELETE',
         url: '/points/delete_points',
         data: {
-          user_email: userEmail,
+          user_email: selectedUser.identifier,
           event: event
         }
       });
@@ -171,7 +170,7 @@ const Leaderboard = () => {
                               <td className="px-4 py-2">{point.timestamp}</td>
                               <td className="px-4 py-2">
                                 <button
-                                  onClick={() => deletePoints(selectedUser.email, point.event)}
+                                  onClick={() => deletePoints(selectedUser, point.event)}
                                   disabled={deleteLoading}
                                   className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded disabled:opacity-50"
                                 >
