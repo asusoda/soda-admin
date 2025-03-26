@@ -45,6 +45,7 @@ const Leaderboard = () => {
   // Function to delete points
   const deletePoints = async (userEmail, event) => {
     setDeleteLoading(true);
+    console.log(userEmail, event);
     try {
       await apiClient.request({
         method: 'DELETE',
